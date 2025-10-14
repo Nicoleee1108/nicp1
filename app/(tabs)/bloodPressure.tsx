@@ -3,28 +3,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    Alert,
-    Animated,
-    FlatList,
-    Modal,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    View
+  Alert,
+  Animated,
+  FlatList,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import type { BloodPressureReading, BloodPressureStats } from "../../types/bloodPressure";
 import {
-    getBloodPressureCategory,
-    getCategoryColor,
-    getCategoryLabel
+  getBloodPressureCategory,
+  getCategoryColor,
+  getCategoryLabel
 } from "../../types/bloodPressure";
 import {
-    addBloodPressureReading,
-    calculateBloodPressureStats,
-    deleteBloodPressureReading,
-    loadBloodPressureReadings
+  addBloodPressureReading,
+  calculateBloodPressureStats,
+  deleteBloodPressureReading,
+  loadBloodPressureReadings
 } from "../lib/bloodPressureStorage";
 
 function formatDate(date: Date): string {
@@ -267,10 +267,7 @@ function AddReadingModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-              <Ionicons name="heart" size={20} color="#ef4444" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 18, fontWeight: '600', color: '#111827' }}>Blood Pressure</Text>
-            </View>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Blood Pressure</Text>
             
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
               <View style={{ flex: 1 }}>
@@ -339,11 +336,7 @@ function AddReadingModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-              <Ionicons name="pulse" size={20} color="#f59e0b" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 18, fontWeight: '600', color: '#111827' }}>Pulse Rate</Text>
-              <Text style={{ fontSize: 14, color: '#6b7280', marginLeft: 8 }}>(Optional)</Text>
-            </View>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Pulse Rate (Optional)</Text>
             
             <TextInput
               style={{
@@ -379,11 +372,7 @@ function AddReadingModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-              <Ionicons name="document-text" size={20} color="#3b82f6" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 18, fontWeight: '600', color: '#111827' }}>Notes</Text>
-              <Text style={{ fontSize: 14, color: '#6b7280', marginLeft: 8 }}>(Optional)</Text>
-            </View>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Notes (Optional)</Text>
             
             <TextInput
               style={{

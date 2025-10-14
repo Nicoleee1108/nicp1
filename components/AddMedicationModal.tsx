@@ -1,14 +1,13 @@
 // components/AddMedicationModal.tsx
+import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from "react";
 import {
   Alert,
-  Keyboard,
   Modal,
   Pressable,
   ScrollView,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
   View
 } from "react-native";
 import { ensureNotificationSetup, scheduleDailyReminder } from "../app/lib/notifications";
@@ -37,7 +36,7 @@ export default function AddMedicationModal({
   const [timesPerDay, setTimesPerDay] = useState(3);
   const [times, setTimes] = useState<Date[]>(defaultTimesFor(3));
 
-  const canAddMoreTimes = times.length < 3;
+  const canAddMoreTimes = times.length < 5;
 
   function resetForm() {
     setName("");
@@ -48,7 +47,7 @@ export default function AddMedicationModal({
   }
 
   function handleTimesPerDayChange(next: number) {
-    const n = Math.max(1, Math.min(3, next));
+    const n = Math.max(1, Math.min(5, next));
     setTimesPerDay(n);
     setTimes(defaultTimesFor(n));
   }
@@ -126,48 +125,51 @@ export default function AddMedicationModal({
     label: string;
   }) {
     return (
-      <View style={{ marginTop: 8 }}>
-        <Text style={{ fontWeight: "600", marginBottom: 6 }}>{label}</Text>
+      <View style={{ marginBottom: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{label}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Pressable
             onPress={() => setValue(Math.max(min, value - 1))}
             style={{
-              paddingVertical: 8,
-              paddingHorizontal: 14,
-              borderWidth: 1,
-              borderColor: "#d1d5db",
-              borderTopLeftRadius: 10,
-              borderBottomLeftRadius: 10,
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              borderWidth: 2,
+              borderColor: "#e5e7eb",
+              borderTopLeftRadius: 12,
+              borderBottomLeftRadius: 12,
+              backgroundColor: '#fff',
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "700" }}>-</Text>
+            <Text style={{ fontSize: 18, fontWeight: "700", color: '#111827' }}>-</Text>
           </Pressable>
           <View
             style={{
-              paddingVertical: 8,
-              paddingHorizontal: 16,
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-              borderColor: "#d1d5db",
-              minWidth: 56,
+              paddingVertical: 12,
+              paddingHorizontal: 20,
+              borderTopWidth: 2,
+              borderBottomWidth: 2,
+              borderColor: "#e5e7eb",
+              minWidth: 60,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor: '#fff',
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "700" }}>{value}</Text>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: '#111827' }}>{value}</Text>
           </View>
           <Pressable
             onPress={() => setValue(Math.min(max, value + 1))}
             style={{
-              paddingVertical: 8,
-              paddingHorizontal: 14,
-              borderWidth: 1,
-              borderColor: "#d1d5db",
-              borderTopRightRadius: 10,
-              borderBottomRightRadius: 10,
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              borderWidth: 2,
+              borderColor: "#e5e7eb",
+              borderTopRightRadius: 12,
+              borderBottomRightRadius: 12,
+              backgroundColor: '#fff',
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "700" }}>+</Text>
+            <Text style={{ fontSize: 18, fontWeight: "700", color: '#111827' }}>+</Text>
           </Pressable>
         </View>
       </View>
@@ -181,7 +183,7 @@ export default function AddMedicationModal({
         value={timesPerDay}
         setValue={handleTimesPerDayChange}
         min={1}
-        max={3}
+        max={5}
         label="Times per day"
       />
     ),
@@ -189,153 +191,157 @@ export default function AddMedicationModal({
   );
 
   return (
-    <Modal visible={visible} animationType="fade" transparent>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.25)",
-            paddingHorizontal: 20,
-          }}
-        >
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <TouchableWithoutFeedback onPress={() => {}}>
-              <View
-                style={{
-                  width: "100%",
-                  maxWidth: 420,
-                  backgroundColor: "#fff",
-                  padding: 18,
-                  borderRadius: 16,
-                  elevation: 5,
-                  shadowColor: "#000",
-                  shadowOpacity: 0.2,
-                  shadowRadius: 8,
-                  shadowOffset: { width: 0, height: 2 },
-                }}
-              >
-                <Text style={{ fontSize: 18, fontWeight: "800", textAlign: "center" }}>
-                  Add Medication
-                </Text>
-
-                <ScrollView
-                  style={{ maxHeight: 520, marginTop: 12 }}
-                  keyboardShouldPersistTaps="handled"
-                  bounces={false}
-                >
-                  <Text style={{ fontWeight: "600" }}>Name</Text>
-                  <TextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="e.g., Lisinopril"
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#e5e7eb",
-                      borderRadius: 10,
-                      padding: 10,
-                      marginTop: 6,
-                      marginBottom: 12,
-                    }}
-                  />
-
-                  <Text style={{ fontWeight: "600" }}>Usage (instructions) - Optional</Text>
-                  <TextInput
-                    value={usage}
-                    onChangeText={setUsage}
-                    placeholder='e.g., "2 pills per intake; avoid with grapefruit"'
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#e5e7eb",
-                      borderRadius: 10,
-                      padding: 10,
-                      marginTop: 6,
-                    }}
-                    multiline
-                  />
-
-                  <Stepper
-                    value={dosagePerIntake}
-                    setValue={setDosagePerIntake}
-                    min={1}
-                    max={10}
-                    label="Dosage per intake (pills)"
-                  />
-
-                  {timesPerDayStepper}
-
-                  <View style={{ marginTop: 10 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 6 }}>
-                      <Text style={{ fontWeight: "700", fontSize: 16, flex: 1 }}>
-                        Reminder times
-                      </Text>
-                      <Pressable
-                        onPress={onAddTime}
-                        disabled={!canAddMoreTimes}
-                        style={{
-                          borderWidth: 1,
-                          borderColor: canAddMoreTimes ? "#d1d5db" : "#e5e7eb",
-                          backgroundColor: canAddMoreTimes ? "#f9fafb" : "#f3f4f6",
-                          borderRadius: 8,
-                          paddingVertical: 6,
-                          paddingHorizontal: 10,
-                          opacity: canAddMoreTimes ? 1 : 0.6,
-                        }}
-                      >
-                        <Text style={{ fontWeight: "700" }}>+ Add</Text>
-                      </Pressable>
-                    </View>
-
-                    <View style={{ gap: 8 }}>
-                      {times.map((t, idx) => (
-                        <ReminderTimeRow
-                          key={idx}
-                          index={idx}
-                          date={t}
-                          onTimeChange={onTimeChange}
-                          onDelete={onDelete}
-                        />
-                      ))}
-                    </View>
-                  </View>
-                </ScrollView>
-
-                <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
-                  <Pressable
-                    onPress={() => {
-                      resetForm();
-                      onCancel();
-                    }}
-                    style={{
-                      flex: 1,
-                      alignItems: "center",
-                      padding: 12,
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: "#e5e7eb",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    <Text style={{ fontWeight: "600" }}>Cancel</Text>
-                  </Pressable>
-
-                  <Pressable
-                    onPress={onSave}
-                    style={{
-                      flex: 1,
-                      alignItems: "center",
-                      padding: 12,
-                      borderRadius: 10,
-                      backgroundColor: "#111827",
-                    }}
-                  >
-                    <Text style={{ color: "white", fontWeight: "700" }}>Save</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+      <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
+        {/* Header */}
+        <View style={{ 
+          backgroundColor: '#fff', 
+          paddingTop: 20, 
+          paddingBottom: 16, 
+          paddingHorizontal: 20,
+          borderBottomWidth: 1,
+          borderBottomColor: '#e5e7eb',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 4,
+          elevation: 2,
+        }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="add-circle" size={24} color="#111827" style={{ marginRight: 8 }} />
+              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>Add Medication</Text>
+            </View>
+            <Pressable 
+              onPress={() => {
+                resetForm();
+                onCancel();
+              }}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                backgroundColor: '#f3f4f6',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Ionicons name="close" size={18} color="#6b7280" />
+            </Pressable>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
+          {/* Name */}
+          <View style={{ marginBottom: 16 }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Name</Text>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="e.g., Lisinopril"
+              style={{
+                borderWidth: 2,
+                borderColor: '#e5e7eb',
+                borderRadius: 12,
+                padding: 16,
+                fontSize: 16,
+                backgroundColor: '#fff',
+                color: '#111827'
+              }}
+              placeholderTextColor="#9ca3af"
+              maxLength={100}
+            />
+          </View>
+
+          {/* Usage */}
+          <View style={{ marginBottom: 16 }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Usage (Optional)</Text>
+            <TextInput
+              value={usage}
+              onChangeText={setUsage}
+              placeholder='e.g., "2 pills per intake; avoid with grapefruit"'
+              style={{
+                borderWidth: 2,
+                borderColor: '#e5e7eb',
+                borderRadius: 12,
+                padding: 16,
+                fontSize: 16,
+                backgroundColor: '#fff',
+                height: 100,
+                textAlignVertical: 'top',
+                color: '#111827'
+              }}
+              placeholderTextColor="#9ca3af"
+              multiline
+              maxLength={200}
+            />
+          </View>
+
+          <Stepper
+            value={dosagePerIntake}
+            setValue={setDosagePerIntake}
+            min={1}
+            max={10}
+            label="Dosage per intake (pills)"
+          />
+
+          {timesPerDayStepper}
+
+          {/* Reminder Times */}
+          <View style={{ marginBottom: 30 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+              <Text style={{ fontSize: 18, fontWeight: '600', color: '#111827', flex: 1 }}>
+                Reminder times
+              </Text>
+              <Pressable
+                onPress={onAddTime}
+                disabled={!canAddMoreTimes}
+                style={{
+                  borderWidth: 2,
+                  borderColor: canAddMoreTimes ? "#e5e7eb" : "#e5e7eb",
+                  backgroundColor: canAddMoreTimes ? "#fff" : "#f3f4f6",
+                  borderRadius: 12,
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                  opacity: canAddMoreTimes ? 1 : 0.6,
+                }}
+              >
+                <Text style={{ fontWeight: "600", color: '#111827' }}>+ Add</Text>
+              </Pressable>
+            </View>
+
+            <View style={{ gap: 8 }}>
+              {times.map((t, idx) => (
+                <ReminderTimeRow
+                  key={idx}
+                  index={idx}
+                  date={t}
+                  onTimeChange={onTimeChange}
+                  onDelete={onDelete}
+                />
+              ))}
+            </View>
+          </View>
+
+          {/* Save Button */}
+          <Pressable
+            onPress={onSave}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? '#0f172a' : '#111827',
+              borderRadius: 16,
+              padding: 18,
+              alignItems: 'center',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.1,
+              shadowRadius: 8,
+              elevation: 4,
+            })}
+          >
+            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Save Medication</Text>
+          </Pressable>
+        </ScrollView>
+      </View>
 
     </Modal>
   );

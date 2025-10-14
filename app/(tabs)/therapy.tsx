@@ -3,14 +3,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    Alert,
-    FlatList,
-    Modal,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    View
+  Alert,
+  FlatList,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View
 } from "react-native";
 import type { TherapySession } from "../../types/database";
 import { healthDB } from "../lib/database";
@@ -288,7 +288,7 @@ function AddSessionModal({
 
           {/* Title */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#374151' }}>Title</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Title</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -309,7 +309,7 @@ function AddSessionModal({
 
           {/* Description */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#374151' }}>Description</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Description</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -333,7 +333,7 @@ function AddSessionModal({
 
           {/* Duration */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#374151' }}>Duration (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Duration (Optional)</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -357,7 +357,7 @@ function AddSessionModal({
 
           {/* Notes */}
           <View style={{ marginBottom: 30 }}>
-            <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#374151' }}>Notes (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Notes (Optional)</Text>
             <TextInput
               style={{
                 borderWidth: 2,
