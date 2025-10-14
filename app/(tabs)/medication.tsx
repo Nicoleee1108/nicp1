@@ -7,7 +7,7 @@ import { Alert, Animated, FlatList, Pressable, ScrollView, Text, View } from "re
 import { Swipeable } from "react-native-gesture-handler";
 import AddMedicationModal from "../../components/AddMedicationModal";
 import type { Med } from "../../types/med";
-import { cancelMany, createTestMedicationReminder, getScheduledNotifications, testNotification } from "../lib/notifications";
+import { cancelMany } from "../lib/notifications";
 import { loadMeds, saveMeds } from "../lib/storage";
 
 
@@ -184,44 +184,6 @@ export default function MedicationPage() {
     setOpen(false);
   }
 
-  async function handleTestNotification() {
-    await testNotification();
-    Alert.alert("Test Notification", "A test notification will appear in 2 seconds!");
-  }
-
-  async function handleCheckScheduled() {
-    const scheduled = await getScheduledNotifications();
-    
-    if (scheduled.length === 0) {
-      Alert.alert("Scheduled Notifications", "No notifications scheduled");
-      return;
-    }
-
-    // Format the scheduled notifications with times
-    const notificationDetails = scheduled.map((notif, index) => {
-      const trigger = notif.trigger;
-      let timeStr = "Unknown time";
-      
-      if (trigger.type === 'calendar') {
-        timeStr = `${trigger.hour}:${String(trigger.minute).padStart(2, '0')}`;
-      } else if (trigger.type === 'date') {
-        const date = new Date(trigger.date);
-        timeStr = date.toLocaleTimeString();
-      }
-      
-      return `${index + 1}. ${notif.content.title}\n   Time: ${timeStr}`;
-    }).join('\n\n');
-
-    Alert.alert(
-      "Scheduled Notifications", 
-      `You have ${scheduled.length} scheduled notifications:\n\n${notificationDetails}`
-    );
-  }
-
-  async function handleTestReminder() {
-    await createTestMedicationReminder();
-    Alert.alert("Test Reminder", "A test medication reminder will appear in 1 minute!");
-  }
 
   return (
     <>
