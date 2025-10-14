@@ -451,7 +451,7 @@ export default function TherapyPage() {
     <>
       <Stack.Screen
         options={{
-          title: "Therapy Tracker",
+          title: "Therapy",
           headerRight: () => (
             <Pressable
               onPress={() => setShowAddModal(true)}

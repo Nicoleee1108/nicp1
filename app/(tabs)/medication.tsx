@@ -189,7 +189,7 @@ export default function MedicationPage() {
     <>
       <Stack.Screen
         options={{
-          title: "Medication Tracker",
+          title: "Medication",
           headerRight: () => (
             <Pressable
               onPress={() => setOpen(true)}

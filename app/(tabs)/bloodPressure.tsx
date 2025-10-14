@@ -601,7 +601,7 @@ export default function BloodPressurePage() {
     <>
       <Stack.Screen
         options={{
-          title: "Blood Pressure",
+          title: "BP",
           headerRight: () => (
             <Pressable
               onPress={() => setShowAddModal(true)}
