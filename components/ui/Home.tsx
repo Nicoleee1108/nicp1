@@ -8,7 +8,6 @@ type HomeProps = {
   nextMedication?: string | null;
   todayBP?: string | null;
   therapyNote?: string;
-  onAdd?: () => void;
   onOpenMedication?: () => void;
   onOpenInstrument?: () => void;
   onOpenTherapy?: () => void;
@@ -89,7 +88,7 @@ function SectionCard({
   );
 }
 
-function QuickStatsCard({ healthSummary }: { healthSummary: HealthSummary | null }) {
+function QuickStatsCard({ healthSummary }: { healthSummary: HealthSummary | null | undefined }) {
   if (!healthSummary) return null;
 
   return (
@@ -141,7 +140,6 @@ export default function Home({
   nextMedication,
   todayBP,
   therapyNote,
-  onAdd,
   onOpenMedication,
   onOpenInstrument,
   onOpenTherapy,

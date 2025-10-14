@@ -70,7 +70,6 @@ export default function Index() {
           }}
         />
         <Home
-          medications={[]}
           adherence7d={0}
           nextDoseTime={null}
           nextMedication={null}
@@ -101,7 +100,6 @@ export default function Index() {
       />
 
       <Home
-        medications={meds}
         adherence7d={healthSummary?.medications.adherence7d || 0}
         nextDoseTime={healthSummary?.medications.nextDose?.time || null}
         nextMedication={healthSummary?.medications.nextDose?.medication || null}
