@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
 import type { HealthSummary } from "../../types/database";
-import AddingButton from "./addingButton";
 
 type HomeProps = {
   adherence7d?: number;
@@ -156,7 +155,7 @@ export default function Home({
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           alignItems: "center",
           paddingHorizontal: 16,
           paddingTop: 16,
@@ -177,7 +176,6 @@ export default function Home({
         >
           <Ionicons name="refresh" size={20} color="#6b7280" />
         </Pressable>
-        <AddingButton onPress={onAdd} />
       </View>
 
       <ScrollView 
