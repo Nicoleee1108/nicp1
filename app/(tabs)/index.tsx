@@ -1,75 +1,125 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+// app/(tabs)/index.tsx
+import { router, Stack } from "expo-router";
+import { useEffect, useState } from "react";
+import Home from "../../components/ui/Home";
+import type { HealthSummary } from "../../types/database";
+import type { Med } from "../../types/med";
+import { healthDB } from "../lib/database";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Index() {
+  const [meds, setMeds] = useState<Med[]>([]);
+  const [healthSummary, setHealthSummary] = useState<HealthSummary | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+  useEffect(() => {
+    loadHealthData();
+  }, []);
+
+  const loadHealthData = async () => {
+    try {
+      setLoading(true);
+      
+      // Initialize database and migrate data if needed
+      await healthDB.initialize();
+      await healthDB.migrateFromOldStorage();
+      
+      // Load medications (legacy format for compatibility)
+      const medications = await healthDB.getMedications();
+      const legacyMeds = medications.map(med => ({
+        id: med.id,
+        name: med.name,
+        usage: med.usage,
+        dosagePerIntake: med.dosagePerIntake,
+        timesPerDay: med.timesPerDay,
+        reminders: med.reminders.map(rem => ({
+          notificationId: rem.notificationId,
+          hour: rem.hour,
+          minute: rem.minute
+        }))
+      }));
+      
+      setMeds(legacyMeds);
+      
+      // Load health summary
+      const summary = await healthDB.getHealthSummary();
+      setHealthSummary(summary);
+      
+    } catch (error) {
+      console.error('Error loading health data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refreshData = () => {
+    loadHealthData();
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Stack.Screen
+          options={{
+            headerTitle: "MedT",
+            headerTitleStyle: {
+              fontSize: 26,
+              fontWeight: "800",
+              color: "#111827",
+            },
+            headerTitleAlign: "center",
+          }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Home
+          medications={[]}
+          adherence7d={0}
+          nextDoseTime={null}
+          nextMedication={null}
+          todayBP={null}
+          therapyNote="Loading..."
+          onOpenMedication={() => router.push("/medication")}
+          onOpenInstrument={() => router.push("/bloodPressure")}
+          onOpenTherapy={() => router.push("/therapy")}
+          onRefresh={refreshData}
+          loading={true}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          headerTitle: "MedT",
+          headerTitleStyle: {
+            fontSize: 26,
+            fontWeight: "800",
+            color: "#111827",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+
+      <Home
+        medications={meds}
+        adherence7d={healthSummary?.medications.adherence7d || 0}
+        nextDoseTime={healthSummary?.medications.nextDose?.time || null}
+        nextMedication={healthSummary?.medications.nextDose?.medication || null}
+        todayBP={healthSummary?.bloodPressure.lastReading ? 
+          `${healthSummary.bloodPressure.lastReading.systolic}/${healthSummary.bloodPressure.lastReading.diastolic}` : 
+          null
+        }
+        therapyNote={healthSummary?.therapy.lastSession ? 
+          `${healthSummary.therapy.lastSession.title} - ${healthSummary.therapy.lastSession.description}` : 
+          "No therapy logged today"
+        }
+        onOpenMedication={() => router.push("/medication")}
+        onOpenInstrument={() => router.push("/bloodPressure")}
+        onOpenTherapy={() => router.push("/therapy")}
+        onRefresh={refreshData}
+        loading={false}
+        healthSummary={healthSummary}
+      />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
