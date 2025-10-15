@@ -1,9 +1,9 @@
-import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 // Import language files
-import enTranslations from '../locales/en.json';
 import cnTranslations from '../locales/cn.json';
+import enTranslations from '../locales/en.json';
 
 export type Language = 'en' | 'cn';
 

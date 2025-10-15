@@ -7,8 +7,8 @@ import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useNotificationHandler } from '@/hooks/useNotificationHandler';
 import { LanguageProvider } from '@/hooks/useLanguage';
+import { useNotificationHandler } from '@/hooks/useNotificationHandler';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

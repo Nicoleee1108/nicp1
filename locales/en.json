@@ -97,10 +97,10 @@
     "trend": "Trend",
     "normal": "Normal",
     "elevated": "Elevated",
-    "stage1Hypertension": "Stage 1 Hypertension",
-    "stage2Hypertension": "Stage 2 Hypertension",
-    "severeHypertension": "Severe Hypertension",
-    "hypertensiveEmergency": "Hypertensive Emergency"
+    "stage_1_hypertension": "Stage 1 Hypertension",
+    "stage_2_hypertension": "Stage 2 Hypertension",
+    "severe_hypertension": "Severe Hypertension",
+    "hypertensive_emergency": "Hypertensive Emergency"
   },
   "therapy": {
     "title": "Therapy",
