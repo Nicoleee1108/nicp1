@@ -1,15 +1,20 @@
 // app/(tabs)/index.tsx
 import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
+import { Dimensions } from "react-native";
 import Home from "../../components/ui/Home";
 import type { HealthSummary } from "../../types/database";
 import type { Med } from "../../types/med";
 import { healthDB } from "../lib/database";
 
 export default function Index() {
+  const { height: screenHeight } = Dimensions.get('window');
   const [meds, setMeds] = useState<Med[]>([]);
   const [healthSummary, setHealthSummary] = useState<HealthSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Calculate responsive title size
+  const isSmallScreen = screenHeight < 700;
 
   useEffect(() => {
     loadHealthData();
@@ -62,7 +67,7 @@ export default function Index() {
           options={{
             headerTitle: "MedT",
             headerTitleStyle: {
-              fontSize: 26,
+              fontSize: isSmallScreen ? 22 : 26,
               fontWeight: "800",
               color: "#111827",
             },
@@ -91,7 +96,7 @@ export default function Index() {
         options={{
           headerTitle: "MedT",
           headerTitleStyle: {
-            fontSize: 26,
+            fontSize: isSmallScreen ? 22 : 26,
             fontWeight: "800",
             color: "#111827",
           },

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   Animated,
+  Dimensions,
   FlatList,
   Modal,
   Pressable,
@@ -548,6 +549,7 @@ function StatsCard({ stats }: { stats: BloodPressureStats }) {
 }
 
 export default function BloodPressurePage() {
+  const { height: screenHeight } = Dimensions.get('window');
   const [readings, setReadings] = useState<BloodPressureReading[]>([]);
   const [stats, setStats] = useState<BloodPressureStats>({
     averageSystolic: 0,
@@ -556,6 +558,10 @@ export default function BloodPressurePage() {
     trend: 'unknown'
   });
   const [showAddModal, setShowAddModal] = useState(false);
+  
+  // Calculate responsive button size
+  const isSmallScreen = screenHeight < 700;
+  const buttonSize = isSmallScreen ? 32 : 36;
 
   useEffect(() => {
     loadReadings();
@@ -595,10 +601,10 @@ export default function BloodPressurePage() {
             <Pressable
               onPress={() => setShowAddModal(true)}
               style={({ pressed }) => ({
-                marginRight: 12,
-                width: 36,
-                height: 36,
-                borderRadius: 18,
+                marginRight: isSmallScreen ? 8 : 12,
+                width: buttonSize,
+                height: buttonSize,
+                borderRadius: buttonSize / 2,
                 backgroundColor: pressed ? '#0f172a' : '#111827',
                 alignItems: "center",
                 justifyContent: "center",
@@ -609,7 +615,7 @@ export default function BloodPressurePage() {
                 elevation: 2,
               })}
             >
-              <Ionicons name="add" size={20} color="white" />
+              <Ionicons name="add" size={isSmallScreen ? 18 : 20} color="white" />
             </Pressable>
           ),
         }}

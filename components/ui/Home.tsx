@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Pressable, ScrollView, Text, View } from "react-native";
 import type { HealthSummary } from "../../types/database";
 
 type HomeProps = {
@@ -147,6 +147,10 @@ export default function Home({
   loading = false,
   healthSummary,
 }: HomeProps) {
+  const { height: screenHeight } = Dimensions.get('window');
+  const isSmallScreen = screenHeight < 700;
+  const buttonSize = isSmallScreen ? 36 : 40;
+  
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
       {/* Header row */}
@@ -155,29 +159,32 @@ export default function Home({
           flexDirection: "row",
           justifyContent: "flex-start",
           alignItems: "center",
-          paddingHorizontal: 16,
-          paddingTop: 16,
-          paddingBottom: 8,
+          paddingHorizontal: isSmallScreen ? 12 : 16,
+          paddingTop: isSmallScreen ? 12 : 16,
+          paddingBottom: isSmallScreen ? 6 : 8,
         }}
       >
         <Pressable
           onPress={onRefresh}
           style={({ pressed }) => ({
-            width: 40,
-            height: 40,
-            borderRadius: 20,
+            width: buttonSize,
+            height: buttonSize,
+            borderRadius: buttonSize / 2,
             backgroundColor: pressed ? '#e5e7eb' : '#f3f4f6',
             alignItems: 'center',
             justifyContent: 'center',
             opacity: pressed ? 0.8 : 1,
           })}
         >
-          <Ionicons name="refresh" size={20} color="#6b7280" />
+          <Ionicons name="refresh" size={isSmallScreen ? 18 : 20} color="#6b7280" />
         </Pressable>
       </View>
 
       <ScrollView 
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        contentContainerStyle={{ 
+          paddingHorizontal: isSmallScreen ? 12 : 16, 
+          paddingBottom: isSmallScreen ? 32 : 40 
+        }}
         showsVerticalScrollIndicator={false}
       >
         {/* Summary chips */}

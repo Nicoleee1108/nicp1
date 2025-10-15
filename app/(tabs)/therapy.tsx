@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Dimensions,
   FlatList,
   Modal,
   Pressable,
@@ -406,8 +407,13 @@ function AddSessionModal({
 }
 
 export default function TherapyPage() {
+  const { height: screenHeight } = Dimensions.get('window');
   const [sessions, setSessions] = useState<TherapySession[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  
+  // Calculate responsive button size
+  const isSmallScreen = screenHeight < 700;
+  const buttonSize = isSmallScreen ? 32 : 36;
 
   useEffect(() => {
     loadSessions();
@@ -456,10 +462,10 @@ export default function TherapyPage() {
             <Pressable
               onPress={() => setShowAddModal(true)}
               style={({ pressed }) => ({
-                marginRight: 12,
-                width: 36,
-                height: 36,
-                borderRadius: 18,
+                marginRight: isSmallScreen ? 8 : 12,
+                width: buttonSize,
+                height: buttonSize,
+                borderRadius: buttonSize / 2,
                 backgroundColor: pressed ? '#0f172a' : '#111827',
                 alignItems: "center",
                 justifyContent: "center",
@@ -470,7 +476,7 @@ export default function TherapyPage() {
                 elevation: 2,
               })}
             >
-              <Ionicons name="add" size={20} color="white" />
+              <Ionicons name="add" size={isSmallScreen ? 18 : 20} color="white" />
             </Pressable>
           ),
         }}

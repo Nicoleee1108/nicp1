@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Animated, FlatList, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Animated, Dimensions, FlatList, Pressable, ScrollView, Text, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import AddMedicationModal from "../../components/AddMedicationModal";
 import type { Med } from "../../types/med";
@@ -160,8 +160,13 @@ function SwipeableMedicationRow({
 
 export default function MedicationPage() {
   const headerHeight = useHeaderHeight();
+  const { height: screenHeight } = Dimensions.get('window');
   const [open, setOpen] = useState(false);
   const [meds, setMeds] = useState<Med[]>([]);
+  
+  // Calculate responsive button size
+  const isSmallScreen = screenHeight < 700;
+  const buttonSize = isSmallScreen ? 32 : 36;
 
   useEffect(() => {
     (async () => setMeds(await loadMeds()))();
@@ -194,10 +199,10 @@ export default function MedicationPage() {
             <Pressable
               onPress={() => setOpen(true)}
               style={({ pressed }) => ({
-                marginRight: 12,
-                width: 36,
-                height: 36,
-                borderRadius: 18,
+                marginRight: isSmallScreen ? 8 : 12,
+                width: buttonSize,
+                height: buttonSize,
+                borderRadius: buttonSize / 2,
                 backgroundColor: pressed ? '#0f172a' : '#111827',
                 alignItems: "center",
                 justifyContent: "center",
@@ -208,7 +213,7 @@ export default function MedicationPage() {
                 elevation: 2,
               })}
             >
-              <Ionicons name="add" size={20} color="white" />
+              <Ionicons name="add" size={isSmallScreen ? 18 : 20} color="white" />
             </Pressable>
           ),
         }}
