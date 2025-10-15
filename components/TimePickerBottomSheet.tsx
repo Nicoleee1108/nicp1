@@ -54,7 +54,7 @@ export default function TimePickerBottomSheet({
         <View style={styles.bottomSheet}>
           <View style={styles.handle} />
           
-          <Text style={styles.title}>{t('medication.selectTime')}</Text>
+          <Text style={styles.title}>{t('therapy.selectReminderTime')}</Text>
           
           <View style={styles.pickerContainer}>
             <DateTimePicker

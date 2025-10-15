@@ -129,6 +129,18 @@
     "missingInformation": "Missing Information",
     "missingInformationMessage": "Please fill in the title and description.",
     "invalidDuration": "Invalid Duration",
-    "invalidDurationMessage": "Please enter a valid duration in minutes."
+    "invalidDurationMessage": "Please enter a valid duration in minutes.",
+    "reminderSettings": "Reminder Settings",
+    "enableReminder": "Enable Reminder",
+    "reminderTime": "Reminder Time",
+    "reminderFrequency": "Frequency",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "custom": "Custom",
+    "selectReminderTime": "Select Reminder Time",
+    "reminderEnabled": "Reminder enabled",
+    "reminderDisabled": "Reminder disabled",
+    "therapyReminderTitle": "Therapy Reminder",
+    "timeForTherapy": "Time for {title}"
   }
 }

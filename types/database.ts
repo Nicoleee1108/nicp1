@@ -55,6 +55,17 @@ export interface TherapySession {
   duration?: number; // in minutes
   timestamp: Date;
   notes?: string;
+  reminder?: TherapyReminder; // Optional reminder for recurring sessions
+}
+
+// Therapy reminder interface
+export interface TherapyReminder {
+  notificationId: string;
+  hour: number;
+  minute: number;
+  isActive: boolean;
+  frequency: 'daily' | 'weekly' | 'custom'; // How often to remind
+  customDays?: number[]; // For custom frequency (0=Sunday, 1=Monday, etc.)
 }
 
 // App settings interface

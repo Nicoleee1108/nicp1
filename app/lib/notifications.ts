@@ -129,3 +129,78 @@ export async function createTestMedicationReminder(): Promise<void> {
   
   console.log(`✅ Test medication reminder scheduled for ${testTime.toLocaleTimeString()}`);
 }
+
+// Therapy reminder functions
+export async function scheduleTherapyReminder(
+  therapyTitle: string,
+  therapyDescription: string,
+  time: Date,
+  frequency: 'daily' | 'weekly' | 'custom' = 'daily',
+  customDays?: number[]
+): Promise<{ notificationId: string; hour: number; minute: number }> {
+  const hour = time.getHours();
+  const minute = time.getMinutes();
+
+  console.log(`📅 Scheduling therapy reminder for ${therapyTitle} at ${hour}:${String(minute).padStart(2, '0')}`);
+
+  let trigger: any;
+
+  if (frequency === 'daily') {
+    trigger = {
+      type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+      hour,
+      minute,
+      repeats: true,
+    };
+  } else if (frequency === 'weekly') {
+    // Schedule for the same day of the week
+    const weekday = time.getDay();
+    trigger = {
+      type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+      hour,
+      minute,
+      weekday,
+      repeats: true,
+    };
+  } else if (frequency === 'custom' && customDays && customDays.length > 0) {
+    // For custom frequency, we'll schedule multiple notifications for each day
+    // This is a simplified approach - in a real app you might want to handle this differently
+    trigger = {
+      type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+      hour,
+      minute,
+      repeats: true,
+    };
+  } else {
+    // Default to daily
+    trigger = {
+      type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+      hour,
+      minute,
+      repeats: true,
+    };
+  }
+
+  const notificationId = await Notifications.scheduleNotificationAsync({
+    content: {
+      title: '🏃‍♂️ Therapy Reminder',
+      body: `Time for ${therapyTitle}: ${therapyDescription}`,
+      sound: true,
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    },
+    trigger,
+  });
+
+  console.log(`✅ Therapy reminder scheduled with ID: ${notificationId}`);
+
+  return {
+    notificationId,
+    hour,
+    minute,
+  };
+}
+
+export async function cancelTherapyReminder(notificationId: string): Promise<void> {
+  await Notifications.cancelScheduledNotificationAsync(notificationId);
+  console.log(`🗑️ Therapy reminder cancelled: ${notificationId}`);
+}

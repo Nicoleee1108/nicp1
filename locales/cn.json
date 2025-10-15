@@ -129,6 +129,18 @@
     "missingInformation": "信息缺失",
     "missingInformationMessage": "请填写标题和描述。",
     "invalidDuration": "无效持续时间",
-    "invalidDurationMessage": "请输入有效的持续时间（分钟）。"
+    "invalidDurationMessage": "请输入有效的持续时间（分钟）。",
+    "reminderSettings": "提醒设置",
+    "enableReminder": "启用提醒",
+    "reminderTime": "提醒时间",
+    "reminderFrequency": "频率",
+    "daily": "每日",
+    "weekly": "每周",
+    "custom": "自定义",
+    "selectReminderTime": "选择提醒时间",
+    "reminderEnabled": "提醒已启用",
+    "reminderDisabled": "提醒已禁用",
+    "therapyReminderTitle": "治疗提醒",
+    "timeForTherapy": "该进行{title}了"
   }
 }

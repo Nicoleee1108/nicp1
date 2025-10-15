@@ -11,13 +11,16 @@ import {
     Modal,
     Pressable,
     ScrollView,
+    Switch,
     Text,
     TextInput,
     View
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
-import type { TherapySession } from "../../types/database";
+import type { TherapySession, TherapyReminder } from "../../types/database";
 import { healthDB } from "../lib/database";
+import TimePickerBottomSheet from "../../components/TimePickerBottomSheet";
+import { scheduleTherapyReminder, cancelTherapyReminder, ensureNotificationSetup } from "../lib/notifications";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -145,6 +148,14 @@ function SwipeableTherapySessionRow({
                 {t('therapy.durationLabel', { duration: item.duration })}
               </Text>
             )}
+            {item.reminder && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                <Ionicons name="notifications" size={12} color="#10b981" style={{ marginRight: 4 }} />
+                <Text style={{ fontSize: 12, color: "#10b981", fontWeight: '500' }}>
+                  {t('therapy.reminderEnabled')} • {String(item.reminder.hour).padStart(2, '0')}:{String(item.reminder.minute).padStart(2, '0')} • {t(`therapy.${item.reminder.frequency}`)}
+                </Text>
+              </View>
+            )}
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
@@ -184,9 +195,13 @@ function AddSessionModal({
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('');
   const [notes, setNotes] = useState('');
+  const [enableReminder, setEnableReminder] = useState(false);
+  const [reminderTime, setReminderTime] = useState(new Date());
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [reminderFrequency, setReminderFrequency] = useState<'daily' | 'weekly'>('daily');
   const t = useTranslation();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim() || !description.trim()) {
       Alert.alert(t('therapy.missingInformation'), t('therapy.missingInformationMessage'));
       return;
@@ -198,12 +213,47 @@ function AddSessionModal({
       return;
     }
 
+    let reminder: TherapyReminder | undefined;
+
+    if (enableReminder) {
+      try {
+        const setupOk = await ensureNotificationSetup();
+        if (setupOk) {
+          const reminderData = await scheduleTherapyReminder(
+            title.trim(),
+            description.trim(),
+            reminderTime,
+            reminderFrequency
+          );
+
+          reminder = {
+            notificationId: reminderData.notificationId,
+            hour: reminderData.hour,
+            minute: reminderData.minute,
+            isActive: true,
+            frequency: reminderFrequency
+          };
+        } else {
+          Alert.alert(
+            t('medication.notificationsDisabled'),
+            t('medication.notificationsDisabledMessage')
+          );
+          // Continue without reminder
+        }
+      } catch (error) {
+        console.error('Error scheduling reminder:', error);
+        Alert.alert('Error', 'Failed to schedule reminder. Please try again.');
+        return;
+      }
+    }
+
     onSave({
       type,
       title: title.trim(),
       description: description.trim(),
       duration: durationNum,
-      notes: notes.trim() || undefined
+      notes: notes.trim() || undefined,
+      reminder
     });
 
     // Reset form
@@ -212,6 +262,9 @@ function AddSessionModal({
     setDescription('');
     setDuration('');
     setNotes('');
+    setEnableReminder(false);
+    setReminderTime(new Date());
+    setReminderFrequency('daily');
     onClose();
   };
 
@@ -388,7 +441,7 @@ function AddSessionModal({
           </View>
 
           {/* Notes */}
-          <View style={{ marginBottom: 30 }}>
+          <View style={{ marginBottom: 16 }}>
             <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.notes')}</Text>
             <TextInput
               style={{
@@ -409,6 +462,94 @@ function AddSessionModal({
               multiline
               maxLength={200}
             />
+          </View>
+
+          {/* Reminder Settings */}
+          <View style={{ 
+            backgroundColor: '#fff', 
+            borderRadius: 16, 
+            padding: 20, 
+            marginBottom: 30,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 4,
+            elevation: 1,
+          }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.reminderSettings')}</Text>
+            
+            {/* Enable Reminder Toggle */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ fontSize: 16, color: '#374151' }}>{t('therapy.enableReminder')}</Text>
+              <Switch
+                value={enableReminder}
+                onValueChange={setEnableReminder}
+                trackColor={{ false: '#e5e7eb', true: '#10b981' }}
+                thumbColor={enableReminder ? '#fff' : '#f3f4f6'}
+              />
+            </View>
+
+            {enableReminder && (
+              <>
+                {/* Reminder Time */}
+                <View style={{ marginBottom: 16 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 8, color: '#374151' }}>{t('therapy.reminderTime')}</Text>
+                  <Pressable
+                    onPress={() => setShowTimePicker(true)}
+                    style={{
+                      borderWidth: 2,
+                      borderColor: '#e5e7eb',
+                      borderRadius: 12,
+                      padding: 16,
+                      backgroundColor: '#fff',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text style={{ fontSize: 16, color: '#111827' }}>
+                      {reminderTime.toLocaleTimeString('en-US', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true 
+                      })}
+                    </Text>
+                    <Ionicons name="time-outline" size={20} color="#6b7280" />
+                  </Pressable>
+                </View>
+
+                {/* Frequency Selection */}
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: '500', marginBottom: 8, color: '#374151' }}>{t('therapy.reminderFrequency')}</Text>
+                  <View style={{ flexDirection: 'row', gap: 12 }}>
+                    {(['daily', 'weekly'] as const).map((freq) => (
+                      <Pressable
+                        key={freq}
+                        onPress={() => setReminderFrequency(freq)}
+                        style={{
+                          flex: 1,
+                          padding: 12,
+                          borderRadius: 8,
+                          borderWidth: 2,
+                          borderColor: reminderFrequency === freq ? '#10b981' : '#e5e7eb',
+                          backgroundColor: reminderFrequency === freq ? '#10b981' + '10' : '#fff',
+                          alignItems: 'center'
+                        }}
+                      >
+                        <Text style={{ 
+                          fontSize: 14, 
+                          fontWeight: '600', 
+                          color: reminderFrequency === freq ? '#10b981' : '#6b7280',
+                          textTransform: 'capitalize'
+                        }}>
+                          {t(`therapy.${freq}`)}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </View>
+              </>
+            )}
           </View>
 
           {/* Save Button */}
@@ -433,6 +574,17 @@ function AddSessionModal({
           </Pressable>
         </ScrollView>
       </View>
+
+      {/* Time Picker Bottom Sheet */}
+      <TimePickerBottomSheet
+        visible={showTimePicker}
+        initialTime={reminderTime}
+        onSave={(time) => {
+          setReminderTime(time);
+          setShowTimePicker(false);
+        }}
+        onCancel={() => setShowTimePicker(false)}
+      />
     </Modal>
   );
 }
@@ -463,6 +615,12 @@ export default function TherapyPage() {
 
   async function onDelete(id: string) {
     try {
+      // Find the session to get reminder info
+      const session = sessions.find(s => s.id === id);
+      if (session?.reminder) {
+        await cancelTherapyReminder(session.reminder.notificationId);
+      }
+      
       await healthDB.deleteTherapySession(id);
       await loadSessions();
     } catch (error) {
