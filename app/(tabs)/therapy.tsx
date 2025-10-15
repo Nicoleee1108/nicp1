@@ -5,6 +5,7 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
     Alert,
+    Animated,
     Dimensions,
     FlatList,
     Modal,
@@ -14,6 +15,7 @@ import {
     TextInput,
     View
 } from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
 import type { TherapySession } from "../../types/database";
 import { healthDB } from "../lib/database";
 
@@ -26,7 +28,7 @@ function formatDate(date: Date): string {
   });
 }
 
-function TherapySessionRow({ 
+function SwipeableTherapySessionRow({ 
   item, 
   onDelete 
 }: { 
@@ -53,6 +55,44 @@ function TherapySessionRow({
     );
   };
 
+  const renderRightActions = (progress: Animated.AnimatedAddition<number>, dragX: Animated.AnimatedAddition<number>) => {
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+
+    return (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Animated.View
+          style={[
+            {
+              backgroundColor: '#ef4444',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 80,
+              height: '100%',
+              borderRadius: 16,
+            },
+            { transform: [{ scale }] }
+          ]}
+        >
+          <Pressable
+            onPress={handleDelete}
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Ionicons name="trash-outline" size={20} color="white" />
+          </Pressable>
+        </Animated.View>
+      </View>
+    );
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'exercise': return 'fitness';
@@ -70,76 +110,63 @@ function TherapySessionRow({
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: '#fff',
-        borderRadius: 16,
-        padding: 20,
-        marginHorizontal: 4,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 3,
-      }}
-    >
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-        <View style={{ flex: 1 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Ionicons 
-              name={getTypeIcon(item.type) as any} 
-              size={16} 
-              color={getTypeColor(item.type)} 
-              style={{ marginRight: 6 }} 
-            />
-            <Text style={{ fontSize: 18, fontWeight: "700", color: '#111827' }}>
-              {item.title}
+    <Swipeable renderRightActions={renderRightActions}>
+      <View
+        style={{
+          backgroundColor: '#fff',
+          borderRadius: 16,
+          padding: 20,
+          marginHorizontal: 4,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 3,
+        }}
+      >
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <Ionicons 
+                name={getTypeIcon(item.type) as any} 
+                size={16} 
+                color={getTypeColor(item.type)} 
+                style={{ marginRight: 6 }} 
+              />
+              <Text style={{ fontSize: 18, fontWeight: "700", color: '#111827' }}>
+                {item.title}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 14, color: "#6b7280", marginBottom: 8 }}>
+              {item.description}
+            </Text>
+            {item.duration && (
+              <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
+                {t('therapy.durationLabel', { duration: item.duration })}
+              </Text>
+            )}
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
+              {formatDate(item.timestamp)}
             </Text>
           </View>
-          <Text style={{ fontSize: 14, color: "#6b7280", marginBottom: 8 }}>
-            {item.description}
-          </Text>
-          {item.duration && (
-            <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
-              {t('therapy.durationLabel', { duration: item.duration })}
+        </View>
+        {item.notes && (
+          <View style={{ 
+            backgroundColor: '#f8fafc', 
+            padding: 12, 
+            borderRadius: 8, 
+            borderLeftWidth: 3, 
+            borderLeftColor: getTypeColor(item.type) 
+          }}>
+            <Text style={{ fontSize: 14, color: "#4b5563", fontStyle: 'italic', lineHeight: 20 }}>
+              &ldquo;{item.notes}&rdquo;
             </Text>
-          )}
-        </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          <Pressable
-            onPress={handleDelete}
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 16,
-              backgroundColor: '#fee2e2',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 8
-            }}
-          >
-            <Ionicons name="trash-outline" size={16} color="#ef4444" />
-          </Pressable>
-          <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
-            {formatDate(item.timestamp)}
-          </Text>
-        </View>
+          </View>
+        )}
       </View>
-      {item.notes && (
-        <View style={{ 
-          backgroundColor: '#f8fafc', 
-          padding: 12, 
-          borderRadius: 8, 
-          borderLeftWidth: 3, 
-          borderLeftColor: getTypeColor(item.type) 
-        }}>
-          <Text style={{ fontSize: 14, color: "#4b5563", fontStyle: 'italic', lineHeight: 20 }}>
-            &ldquo;{item.notes}&rdquo;
-          </Text>
-        </View>
-      )}
-    </View>
+    </Swipeable>
   );
 }
 
@@ -533,7 +560,7 @@ export default function TherapyPage() {
               keyExtractor={(s) => s.id}
               ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
               renderItem={({ item }) => (
-                <TherapySessionRow
+                <SwipeableTherapySessionRow
                   item={item}
                   onDelete={onDelete}
                 />
