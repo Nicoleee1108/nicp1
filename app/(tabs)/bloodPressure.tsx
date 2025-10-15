@@ -1,4 +1,5 @@
 // app/(tabs)/bloodPressure.tsx
+import { useTranslation } from "@/hooks/useLanguage";
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
@@ -18,8 +19,7 @@ import { Swipeable } from "react-native-gesture-handler";
 import type { BloodPressureReading, BloodPressureStats } from "../../types/bloodPressure";
 import {
   getBloodPressureCategory,
-  getCategoryColor,
-  getCategoryLabel
+  getCategoryColor
 } from "../../types/bloodPressure";
 import {
   addBloodPressureReading,
@@ -44,17 +44,19 @@ function BloodPressureReadingRow({
   item: BloodPressureReading; 
   onDelete: (id: string) => void; 
 }) {
+  const t = useTranslation();
+  
   const handleDelete = () => {
     Alert.alert(
-      "Delete Reading",
-      `Are you sure you want to delete this blood pressure reading?`,
+      t('bloodPressure.deleteReading'),
+      t('bloodPressure.deleteConfirmation'),
       [
         {
-          text: "Cancel",
+          text: t('common.cancel'),
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: t('common.delete'),
           style: "destructive",
           onPress: () => onDelete(item.id),
         },
@@ -134,7 +136,7 @@ function BloodPressureReadingRow({
               alignSelf: 'flex-start'
             }}>
               <Text style={{ fontSize: 12, color: categoryColor, fontWeight: '600' }}>
-                {getCategoryLabel(category)}
+                {t(`bloodPressure.${category}`)}
               </Text>
             </View>
           </View>
@@ -149,7 +151,7 @@ function BloodPressureReadingRow({
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Ionicons name="pulse-outline" size={14} color="#6b7280" style={{ marginRight: 4 }} />
                 <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
-                  {item.pulse} bpm
+                  {item.pulse} {t('common.bpm')}
                 </Text>
               </View>
             )}
@@ -186,6 +188,7 @@ function AddReadingModal({
   const [diastolic, setDiastolic] = useState('');
   const [pulse, setPulse] = useState('');
   const [notes, setNotes] = useState('');
+  const t = useTranslation();
 
   const handleSave = () => {
     const systolicNum = parseInt(systolic);
@@ -193,12 +196,12 @@ function AddReadingModal({
     const pulseNum = pulse ? parseInt(pulse) : undefined;
 
     if (isNaN(systolicNum) || isNaN(diastolicNum) || systolicNum < 50 || systolicNum > 300 || diastolicNum < 30 || diastolicNum > 200) {
-      Alert.alert('Invalid Reading', 'Please enter valid blood pressure values.');
+      Alert.alert(t('bloodPressure.invalidReading'), t('bloodPressure.invalidReadingMessage'));
       return;
     }
 
     if (pulseNum !== undefined && (isNaN(pulseNum) || pulseNum < 30 || pulseNum > 200)) {
-      Alert.alert('Invalid Pulse', 'Please enter a valid pulse rate (30-200 bpm).');
+      Alert.alert(t('bloodPressure.invalidPulse'), t('bloodPressure.invalidPulseMessage'));
       return;
     }
 
@@ -237,7 +240,7 @@ function AddReadingModal({
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="add-circle" size={24} color="#111827" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>Add Reading</Text>
+              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>{t('bloodPressure.addReading')}</Text>
             </View>
             <Pressable 
               onPress={onClose}
@@ -268,11 +271,11 @@ function AddReadingModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Blood Pressure</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('bloodPressure.bloodPressure')}</Text>
             
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 8, color: '#374151' }}>Systolic</Text>
+                <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 8, color: '#374151' }}>{t('bloodPressure.systolic')}</Text>
                 <TextInput
                   style={{
                     borderWidth: 2,
@@ -292,7 +295,7 @@ function AddReadingModal({
                   keyboardType="numeric"
                   maxLength={3}
                 />
-                <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>Top number</Text>
+                <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>{t('common.topNumber')}</Text>
               </View>
               
               <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 24 }}>
@@ -300,7 +303,7 @@ function AddReadingModal({
               </View>
               
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 8, color: '#374151' }}>Diastolic</Text>
+                <Text style={{ fontSize: 14, fontWeight: '600', marginBottom: 8, color: '#374151' }}>{t('bloodPressure.diastolic')}</Text>
                 <TextInput
                   style={{
                     borderWidth: 2,
@@ -320,7 +323,7 @@ function AddReadingModal({
                   keyboardType="numeric"
                   maxLength={3}
                 />
-                <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>Bottom number</Text>
+                <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>{t('common.bottomNumber')}</Text>
               </View>
             </View>
           </View>
@@ -337,7 +340,7 @@ function AddReadingModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Pulse Rate (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('bloodPressure.pulseRate')}</Text>
             
             <TextInput
               style={{
@@ -358,7 +361,7 @@ function AddReadingModal({
               keyboardType="numeric"
               maxLength={3}
             />
-            <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>Beats per minute</Text>
+            <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>{t('common.beatsPerMinute')}</Text>
           </View>
 
           {/* Notes Input */}
@@ -373,7 +376,7 @@ function AddReadingModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Notes (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('bloodPressure.notes')}</Text>
             
             <TextInput
               style={{
@@ -387,7 +390,7 @@ function AddReadingModal({
                 textAlignVertical: 'top',
                 color: '#111827'
               }}
-              placeholder="Any notes about this reading..."
+              placeholder={t('bloodPressure.notesPlaceholder')}
               placeholderTextColor="#9ca3af"
               value={notes}
               onChangeText={setNotes}
@@ -416,7 +419,7 @@ function AddReadingModal({
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginRight: 8 }} />
-              <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Save Reading</Text>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>{t('bloodPressure.saveReading')}</Text>
             </View>
           </Pressable>
         </ScrollView>
@@ -426,6 +429,8 @@ function AddReadingModal({
 }
 
 function StatsCard({ stats }: { stats: BloodPressureStats }) {
+  const t = useTranslation();
+  
   if (stats.readingsCount === 0) {
     return (
       <View style={{
@@ -443,10 +448,10 @@ function StatsCard({ stats }: { stats: BloodPressureStats }) {
       }}>
         <Ionicons name="analytics-outline" size={48} color="#9ca3af" style={{ marginBottom: 16 }} />
         <Text style={{ fontSize: 16, fontWeight: '600', color: '#6b7280', textAlign: 'center', marginBottom: 8 }}>
-          No readings yet
+          {t('bloodPressure.noReadingsYetStats')}
         </Text>
         <Text style={{ fontSize: 14, color: "#9ca3af", textAlign: 'center', lineHeight: 20 }}>
-          Add your first reading to see statistics and trends
+          {t('bloodPressure.addFirstReading')}
         </Text>
       </View>
     );
@@ -488,12 +493,12 @@ function StatsCard({ stats }: { stats: BloodPressureStats }) {
     }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
         <Ionicons name="analytics" size={24} color="#111827" style={{ marginRight: 8 }} />
-        <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>Statistics</Text>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>{t('bloodPressure.statistics')}</Text>
       </View>
       
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4, fontWeight: '500' }}>Average BP</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4, fontWeight: '500' }}>{t('bloodPressure.averageBp')}</Text>
           <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>
             {stats.averageSystolic}/{stats.averageDiastolic}
           </Text>
@@ -501,15 +506,15 @@ function StatsCard({ stats }: { stats: BloodPressureStats }) {
         
         {stats.averagePulse && (
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4, fontWeight: '500' }}>Avg Pulse</Text>
+            <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4, fontWeight: '500' }}>{t('bloodPressure.avgPulse')}</Text>
             <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>
-              {stats.averagePulse} bpm
+              {stats.averagePulse} {t('common.bpm')}
             </Text>
           </View>
         )}
         
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4, fontWeight: '500' }}>Readings</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4, fontWeight: '500' }}>{t('bloodPressure.readings')}</Text>
           <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>
             {stats.readingsCount}
           </Text>
@@ -523,14 +528,14 @@ function StatsCard({ stats }: { stats: BloodPressureStats }) {
         marginBottom: 16 
       }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <Text style={{ fontSize: 14, color: '#6b7280', fontWeight: '500' }}>Last Reading</Text>
+          <Text style={{ fontSize: 14, color: '#6b7280', fontWeight: '500' }}>{t('bloodPressure.lastReading')}</Text>
           <Text style={{ fontSize: 18, fontWeight: '700', color: categoryColor }}>
             {stats.lastReading?.systolic}/{stats.lastReading?.diastolic}
           </Text>
         </View>
         
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 14, color: '#6b7280', fontWeight: '500' }}>Trend</Text>
+          <Text style={{ fontSize: 14, color: '#6b7280', fontWeight: '500' }}>{t('bloodPressure.trend')}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons 
               name={getTrendIcon(stats.trend)} 
@@ -558,6 +563,7 @@ export default function BloodPressurePage() {
     trend: 'unknown'
   });
   const [showAddModal, setShowAddModal] = useState(false);
+  const t = useTranslation();
   
   // Calculate responsive button size
   const isSmallScreen = screenHeight < 700;
@@ -596,7 +602,7 @@ export default function BloodPressurePage() {
     <>
       <Stack.Screen
         options={{
-          title: "BP",
+          title: t('navigation.bp'),
           headerTitleStyle: {
             fontSize: isSmallScreen ? 22 : 26,
             fontWeight: "800",
@@ -638,7 +644,7 @@ export default function BloodPressurePage() {
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, marginHorizontal: 4 }}>
             <Ionicons name="list" size={20} color="#111827" style={{ marginRight: 8 }} />
             <Text style={{ fontSize: 20, fontWeight: "700", color: '#111827' }}>
-              Recent Readings
+              {t('bloodPressure.recentReadings')}
             </Text>
           </View>
 
@@ -657,10 +663,10 @@ export default function BloodPressurePage() {
             }}>
               <Ionicons name="heart-outline" size={64} color="#d1d5db" style={{ marginBottom: 16 }} />
               <Text style={{ color: "#6b7280", textAlign: 'center', marginBottom: 8, fontSize: 16, fontWeight: '600' }}>
-                No blood pressure readings yet
+                {t('bloodPressure.noReadingsYet')}
               </Text>
               <Text style={{ color: "#9ca3af", textAlign: 'center', fontSize: 14, lineHeight: 20 }}>
-                Start tracking your blood pressure by adding your first reading
+                {t('bloodPressure.startTracking')}
               </Text>
             </View>
           ) : (

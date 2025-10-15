@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useNotificationHandler } from '@/hooks/useNotificationHandler';
+import { LanguageProvider } from '@/hooks/useLanguage';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -26,13 +27,15 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="dark" backgroundColor="#f8fafc" translucent={true} />
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="dark" backgroundColor="#f8fafc" translucent={true} />
+          </ThemeProvider>
+        </LanguageProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );

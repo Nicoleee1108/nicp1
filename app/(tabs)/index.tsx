@@ -1,8 +1,11 @@
 // app/(tabs)/index.tsx
+import { useTranslation } from "@/hooks/useLanguage";
 import { useFocusEffect } from "@react-navigation/native";
 import { router, Stack } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Dimensions } from "react-native";
+import { LanguageButton } from "../../components/LanguageButton";
+import { LanguagePopup } from "../../components/LanguagePopup";
 import Home from "../../components/ui/Home";
 import type { HealthSummary } from "../../types/database";
 import type { Med } from "../../types/med";
@@ -13,6 +16,8 @@ export default function Index() {
   const [meds, setMeds] = useState<Med[]>([]);
   const [healthSummary, setHealthSummary] = useState<HealthSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showLanguagePopup, setShowLanguagePopup] = useState(false);
+  const t = useTranslation();
   
   // Calculate responsive title size
   const isSmallScreen = screenHeight < 700;
@@ -73,20 +78,23 @@ export default function Index() {
       <>
         <Stack.Screen
           options={{
-            headerTitle: "Home",
+            headerTitle: t('navigation.home'),
             headerTitleStyle: {
               fontSize: isSmallScreen ? 22 : 26,
               fontWeight: "800",
               color: "#111827",
             },
             headerTitleAlign: "center",
+            headerRight: () => (
+              <LanguageButton onPress={() => setShowLanguagePopup(true)} />
+            ),
           }}
         />
         <Home
           nextDoseTime={null}
           nextMedication={null}
           todayBP={null}
-          therapyNote="Loading..."
+          therapyNote={t('common.loading')}
           onOpenMedication={() => router.push("/medication")}
           onOpenInstrument={() => router.push("/bloodPressure")}
           onOpenTherapy={() => router.push("/therapy")}
@@ -101,13 +109,16 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-            headerTitle: "Home",
+            headerTitle: t('navigation.home'),
           headerTitleStyle: {
             fontSize: isSmallScreen ? 22 : 26,
             fontWeight: "800",
             color: "#111827",
           },
           headerTitleAlign: "center",
+          headerRight: () => (
+            <LanguageButton onPress={() => setShowLanguagePopup(true)} />
+          ),
         }}
       />
 
@@ -120,7 +131,7 @@ export default function Index() {
         }
         therapyNote={healthSummary?.therapy.lastSession ? 
           `${healthSummary.therapy.lastSession.title} - ${healthSummary.therapy.lastSession.description}` : 
-          "No therapy logged today"
+          t('home.noTherapyToday')
         }
         onOpenMedication={() => router.push("/medication")}
         onOpenInstrument={() => router.push("/bloodPressure")}
@@ -128,6 +139,11 @@ export default function Index() {
         onRefresh={refreshData}
         loading={false}
         healthSummary={healthSummary}
+      />
+
+      <LanguagePopup
+        visible={showLanguagePopup}
+        onClose={() => setShowLanguagePopup(false)}
       />
     </>
   );

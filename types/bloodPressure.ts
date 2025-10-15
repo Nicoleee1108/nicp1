@@ -51,6 +51,8 @@ export function getBloodPressureCategory(systolic: number, diastolic: number): B
 }
 
 export function getCategoryLabel(category: BloodPressureCategory): string {
+  // This function will be updated to use translations
+  // For now, return English labels - they will be replaced by t() calls in components
   switch (category) {
     case 'normal': return 'Normal';
     case 'elevated': return 'Elevated';

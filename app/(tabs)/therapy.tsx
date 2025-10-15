@@ -1,4 +1,5 @@
 // app/(tabs)/therapy.tsx
+import { useTranslation } from "@/hooks/useLanguage";
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
@@ -32,17 +33,19 @@ function TherapySessionRow({
   item: TherapySession; 
   onDelete: (id: string) => void; 
 }) {
+  const t = useTranslation();
+  
   const handleDelete = () => {
     Alert.alert(
-      "Delete Session",
-      `Are you sure you want to delete this therapy session?`,
+      t('therapy.deleteSession'),
+      t('therapy.deleteConfirmation'),
       [
         {
-          text: "Cancel",
+          text: t('common.cancel'),
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: t('common.delete'),
           style: "destructive",
           onPress: () => onDelete(item.id),
         },
@@ -99,7 +102,7 @@ function TherapySessionRow({
           </Text>
           {item.duration && (
             <Text style={{ fontSize: 12, color: "#6b7280", fontWeight: '500' }}>
-              Duration: {item.duration} minutes
+              {t('therapy.durationLabel', { duration: item.duration })}
             </Text>
           )}
         </View>
@@ -154,16 +157,17 @@ function AddSessionModal({
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('');
   const [notes, setNotes] = useState('');
+  const t = useTranslation();
 
   const handleSave = () => {
     if (!title.trim() || !description.trim()) {
-      Alert.alert('Missing Information', 'Please fill in the title and description.');
+      Alert.alert(t('therapy.missingInformation'), t('therapy.missingInformationMessage'));
       return;
     }
 
     const durationNum = duration ? parseInt(duration) : undefined;
     if (durationNum !== undefined && (isNaN(durationNum) || durationNum < 0)) {
-      Alert.alert('Invalid Duration', 'Please enter a valid duration in minutes.');
+      Alert.alert(t('therapy.invalidDuration'), t('therapy.invalidDurationMessage'));
       return;
     }
 
@@ -220,7 +224,7 @@ function AddSessionModal({
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="add-circle" size={24} color="#111827" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>Add Therapy Session</Text>
+              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>{t('therapy.addSession')}</Text>
             </View>
             <Pressable 
               onPress={onClose}
@@ -251,7 +255,7 @@ function AddSessionModal({
             shadowRadius: 4,
             elevation: 1,
           }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Type</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.type')}</Text>
             
             <View style={{ flexDirection: 'row', gap: 12 }}>
               {(['exercise', 'diet', 'other'] as const).map((sessionType) => (
@@ -280,7 +284,7 @@ function AddSessionModal({
                     color: type === sessionType ? getTypeColor(sessionType) : '#6b7280',
                     textTransform: 'capitalize'
                   }}>
-                    {sessionType}
+                    {t(`therapy.${sessionType}`)}
                   </Text>
                 </Pressable>
               ))}
@@ -289,7 +293,7 @@ function AddSessionModal({
 
           {/* Title */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Title</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.titleLabel')}</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -300,7 +304,7 @@ function AddSessionModal({
                 backgroundColor: '#fff',
                 color: '#111827'
               }}
-              placeholder="e.g., Morning Walk"
+              placeholder={t('therapy.titlePlaceholder')}
               placeholderTextColor="#9ca3af"
               value={title}
               onChangeText={setTitle}
@@ -310,7 +314,7 @@ function AddSessionModal({
 
           {/* Description */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Description</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.description')}</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -323,7 +327,7 @@ function AddSessionModal({
                 textAlignVertical: 'top',
                 color: '#111827'
               }}
-              placeholder="Describe what you did..."
+              placeholder={t('therapy.descriptionPlaceholder')}
               placeholderTextColor="#9ca3af"
               value={description}
               onChangeText={setDescription}
@@ -334,7 +338,7 @@ function AddSessionModal({
 
           {/* Duration */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Duration (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.duration')}</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -346,19 +350,19 @@ function AddSessionModal({
                 textAlign: 'center',
                 color: '#111827'
               }}
-              placeholder="30"
+              placeholder={t('therapy.durationPlaceholder')}
               placeholderTextColor="#9ca3af"
               value={duration}
               onChangeText={setDuration}
               keyboardType="numeric"
               maxLength={3}
             />
-            <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>Minutes</Text>
+            <Text style={{ fontSize: 12, color: '#6b7280', textAlign: 'center', marginTop: 4 }}>{t('common.minutes')}</Text>
           </View>
 
           {/* Notes */}
           <View style={{ marginBottom: 30 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Notes (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('therapy.notes')}</Text>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -371,7 +375,7 @@ function AddSessionModal({
                 textAlignVertical: 'top',
                 color: '#111827'
               }}
-              placeholder="Any additional notes..."
+              placeholder={t('therapy.notesPlaceholder')}
               placeholderTextColor="#9ca3af"
               value={notes}
               onChangeText={setNotes}
@@ -397,7 +401,7 @@ function AddSessionModal({
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="checkmark-circle" size={20} color="white" style={{ marginRight: 8 }} />
-              <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Save Session</Text>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>{t('therapy.saveSession')}</Text>
             </View>
           </Pressable>
         </ScrollView>
@@ -410,6 +414,7 @@ export default function TherapyPage() {
   const { height: screenHeight } = Dimensions.get('window');
   const [sessions, setSessions] = useState<TherapySession[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const t = useTranslation();
   
   // Calculate responsive button size
   const isSmallScreen = screenHeight < 700;
@@ -457,7 +462,7 @@ export default function TherapyPage() {
     <>
       <Stack.Screen
         options={{
-          title: "Therapy",
+          title: t('navigation.therapy'),
           headerTitleStyle: {
             fontSize: isSmallScreen ? 22 : 26,
             fontWeight: "800",
@@ -497,7 +502,7 @@ export default function TherapyPage() {
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, marginHorizontal: 4 }}>
             <Ionicons name="fitness" size={20} color="#111827" style={{ marginRight: 8 }} />
             <Text style={{ fontSize: 20, fontWeight: "700", color: '#111827' }}>
-              Therapy Sessions
+              {t('therapy.therapySessions')}
             </Text>
           </View>
 
@@ -516,10 +521,10 @@ export default function TherapyPage() {
             }}>
               <Ionicons name="fitness-outline" size={64} color="#d1d5db" style={{ marginBottom: 16 }} />
               <Text style={{ color: "#6b7280", textAlign: 'center', marginBottom: 8, fontSize: 16, fontWeight: '600' }}>
-                No therapy sessions yet
+                {t('therapy.noSessionsYet')}
               </Text>
               <Text style={{ color: "#9ca3af", textAlign: 'center', fontSize: 14, lineHeight: 20 }}>
-                Start tracking your therapy activities by adding your first session
+                {t('therapy.startTracking')}
               </Text>
             </View>
           ) : (

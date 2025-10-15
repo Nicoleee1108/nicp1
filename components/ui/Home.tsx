@@ -1,3 +1,4 @@
+import { useTranslation } from "@/hooks/useLanguage";
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Dimensions, Pressable, ScrollView, Text, View } from "react-native";
 import type { HealthSummary } from "../../types/database";
@@ -88,6 +89,7 @@ function SectionCard({
 }
 
 function QuickStatsCard({ healthSummary }: { healthSummary: HealthSummary | null | undefined }) {
+  const t = useTranslation();
   if (!healthSummary) return null;
 
   return (
@@ -104,26 +106,26 @@ function QuickStatsCard({ healthSummary }: { healthSummary: HealthSummary | null
     }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
         <Ionicons name="analytics" size={24} color="#111827" style={{ marginRight: 8 }} />
-        <Text style={{ fontSize: 18, fontWeight: '700', color: '#111827' }}>Quick Stats</Text>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: '#111827' }}>{t('home.quickStats')}</Text>
       </View>
       
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Active Meds</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>{t('home.activeMeds')}</Text>
           <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>
             {healthSummary.medications.active}
           </Text>
         </View>
         
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>BP Readings</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>{t('home.bpReadings')}</Text>
           <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>
             {healthSummary.bloodPressure.lastReading ? '1' : '0'}
           </Text>
         </View>
         
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Today&apos;s Therapy</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>{t('home.todaysTherapy')}</Text>
           <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>
             {healthSummary.therapy.todaySessions}
           </Text>
@@ -148,6 +150,7 @@ export default function Home({
   const { height: screenHeight } = Dimensions.get('window');
   const isSmallScreen = screenHeight < 700;
   const buttonSize = isSmallScreen ? 36 : 40;
+  const t = useTranslation();
   
   return (
     <View style={{ flex: 1, backgroundColor: "#f8fafc" }}>
@@ -199,7 +202,7 @@ export default function Home({
               }}
             >
               <Ionicons name="heart" size={16} color="#0891b2" style={{ marginRight: 6 }} />
-              <Text style={{ fontWeight: "600", color: '#0e7490' }}>Today&apos;s BP: {todayBP}</Text>
+              <Text style={{ fontWeight: "600", color: '#0e7490' }}>{t('home.todaysBp')}: {todayBP}</Text>
             </View>
           )}
         </View>
@@ -209,11 +212,11 @@ export default function Home({
 
         {/* Big sections */}
         <SectionCard
-          title="Medication Tracker"
-          subtitle="Manage meds, schedules, and adherence"
+          title={t('home.medicationTracker')}
+          subtitle={t('home.medicationSubtitle')}
           metric={nextDoseTime && nextMedication ? 
-            `Next dose: ${nextMedication} at ${nextDoseTime}` : 
-            "No upcoming doses"
+            `${t('home.nextDose')}: ${nextMedication} at ${nextDoseTime}` : 
+            t('home.noUpcomingDoses')
           }
           icon="medical"
           iconColor="#3b82f6"
@@ -222,11 +225,11 @@ export default function Home({
         />
 
         <SectionCard
-          title="Blood Pressure Tracker"
-          subtitle="Record and monitor your BP readings"
+          title={t('home.bloodPressureTracker')}
+          subtitle={t('home.bpSubtitle')}
           metric={todayBP ? 
-            `Last reading: ${todayBP}` : 
-            "No reading logged today"
+            `${t('home.lastReading')}: ${todayBP}` : 
+            t('home.noReadingToday')
           }
           icon="heart"
           iconColor="#ef4444"
@@ -235,9 +238,9 @@ export default function Home({
         />
 
         <SectionCard
-          title="Therapy Tracker"
-          subtitle="Track exercise, diet, or doctor-advised tasks"
-          metric={therapyNote || "No therapy logged today"}
+          title={t('home.therapyTracker')}
+          subtitle={t('home.therapySubtitle')}
+          metric={therapyNote || t('home.noTherapyToday')}
           icon="fitness"
           iconColor="#10b981"
           onPress={onOpenTherapy}

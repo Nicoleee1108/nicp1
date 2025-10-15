@@ -1,14 +1,15 @@
 // components/AddMedicationModal.tsx
+import { useTranslation } from "@/hooks/useLanguage";
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from "react";
 import {
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View
+    Alert,
+    Modal,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    View
 } from "react-native";
 import { ensureNotificationSetup, scheduleDailyReminder } from "../app/lib/notifications";
 import { defaultTimesFor } from "../app/lib/time";
@@ -35,6 +36,7 @@ export default function AddMedicationModal({
   const [dosagePerIntake, setDosagePerIntake] = useState(1);
   const [timesPerDay, setTimesPerDay] = useState(3);
   const [times, setTimes] = useState<Date[]>(defaultTimesFor(3));
+  const t = useTranslation();
 
   const canAddMoreTimes = times.length < 5;
 
@@ -74,19 +76,19 @@ export default function AddMedicationModal({
 
   async function onSave() {
     if (!name.trim()) {
-      Alert.alert("Missing name", "Please enter a medication name.");
+      Alert.alert(t('medication.missingName'), t('medication.missingNameMessage'));
       return;
     }
     if (times.length === 0) {
-      Alert.alert("No times", "Please add at least one reminder time.");
+      Alert.alert(t('medication.noTimes'), t('medication.noTimesMessage'));
       return;
     }
 
     const setupOk = await ensureNotificationSetup();
     if (!setupOk) {
       Alert.alert(
-        "Notifications disabled",
-        "Enable notifications in Settings to receive reminders. You can still save the medication without reminders."
+        t('medication.notificationsDisabled'),
+        t('medication.notificationsDisabledMessage')
       );
     }
 
@@ -184,10 +186,10 @@ export default function AddMedicationModal({
         setValue={handleTimesPerDayChange}
         min={1}
         max={5}
-        label="Times per day"
+        label={t('medication.timesPerDay')}
       />
     ),
-    [timesPerDay]
+    [timesPerDay, t]
   );
 
   return (
@@ -210,7 +212,7 @@ export default function AddMedicationModal({
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="add-circle" size={24} color="#111827" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>Add Medication</Text>
+              <Text style={{ fontSize: 20, fontWeight: '700', color: '#111827' }}>{t('medication.addMedication')}</Text>
             </View>
             <Pressable 
               onPress={() => {
@@ -234,11 +236,11 @@ export default function AddMedicationModal({
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
           {/* Name */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Name</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('medication.name')}</Text>
             <TextInput
               value={name}
               onChangeText={setName}
-              placeholder="e.g., Lisinopril"
+              placeholder={t('medication.namePlaceholder')}
               style={{
                 borderWidth: 2,
                 borderColor: '#e5e7eb',
@@ -255,11 +257,11 @@ export default function AddMedicationModal({
 
           {/* Usage */}
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>Usage (Optional)</Text>
+            <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 16, color: '#111827' }}>{t('medication.usage')}</Text>
             <TextInput
               value={usage}
               onChangeText={setUsage}
-              placeholder='e.g., "2 pills per intake; avoid with grapefruit"'
+              placeholder={t('medication.usagePlaceholder')}
               style={{
                 borderWidth: 2,
                 borderColor: '#e5e7eb',
@@ -282,7 +284,7 @@ export default function AddMedicationModal({
             setValue={setDosagePerIntake}
             min={1}
             max={10}
-            label="Dosage per intake (pills)"
+            label={t('medication.dosagePerIntake')}
           />
 
           {timesPerDayStepper}
@@ -291,7 +293,7 @@ export default function AddMedicationModal({
           <View style={{ marginBottom: 30 }}>
             <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
               <Text style={{ fontSize: 18, fontWeight: '600', color: '#111827', flex: 1 }}>
-                Reminder times
+                {t('medication.reminderTimes')}
               </Text>
               <Pressable
                 onPress={onAddTime}
@@ -306,7 +308,7 @@ export default function AddMedicationModal({
                   opacity: canAddMoreTimes ? 1 : 0.6,
                 }}
               >
-                <Text style={{ fontWeight: "600", color: '#111827' }}>+ Add</Text>
+                <Text style={{ fontWeight: "600", color: '#111827' }}>{t('medication.addTime')}</Text>
               </Pressable>
             </View>
 
@@ -338,7 +340,7 @@ export default function AddMedicationModal({
               elevation: 4,
             })}
           >
-            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Save Medication</Text>
+            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>{t('medication.saveMedication')}</Text>
           </Pressable>
         </ScrollView>
       </View>

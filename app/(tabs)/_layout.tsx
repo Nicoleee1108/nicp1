@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/useLanguage';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from "expo-router";
 import { Dimensions } from 'react-native';
@@ -6,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function TabLayout() {
   const { height: screenHeight } = Dimensions.get('window');
   const insets = useSafeAreaInsets();
+  const t = useTranslation();
   
   // Calculate responsive heights based on screen size
   const isSmallScreen = screenHeight < 700;
@@ -54,7 +56,7 @@ export default function TabLayout() {
       <Tabs.Screen 
         name="index" 
         options={{ 
-          title: "Home",
+          title: t('navigation.home'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
@@ -63,7 +65,7 @@ export default function TabLayout() {
       <Tabs.Screen 
         name="medication" 
         options={{ 
-          title: "Medication",
+          title: t('navigation.medication'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="medical" size={size} color={color} />
           ),
@@ -72,7 +74,7 @@ export default function TabLayout() {
       <Tabs.Screen 
         name="bloodPressure" 
         options={{ 
-          title: "Blood Pressure",
+          title: t('navigation.bloodPressure'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="heart" size={size} color={color} />
           ),
@@ -81,7 +83,7 @@ export default function TabLayout() {
       <Tabs.Screen 
         name="therapy" 
         options={{ 
-          title: "Therapy",
+          title: t('navigation.therapy'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="fitness" size={size} color={color} />
           ),

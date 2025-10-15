@@ -1,4 +1,5 @@
 // app/(tabs)/medication.tsx
+import { useTranslation } from "@/hooks/useLanguage";
 import { Ionicons } from '@expo/vector-icons';
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Stack } from "expo-router";
@@ -26,17 +27,19 @@ function SwipeableMedicationRow({
   item: Med; 
   onDelete: (id: string) => void; 
 }) {
+  const t = useTranslation();
+  
   const handleDelete = () => {
     Alert.alert(
-      "Delete Medication",
-      `Are you sure you want to delete "${item.name}"? This action cannot be undone.`,
+      t('medication.deleteMedication'),
+      t('medication.deleteConfirmation', { name: item.name }),
       [
         {
-          text: "Cancel",
+          text: t('common.cancel'),
           style: "cancel",
         },
         {
-          text: "Delete",
+          text: t('common.delete'),
           style: "destructive",
           onPress: () => onDelete(item.id),
         },
@@ -113,7 +116,7 @@ function SwipeableMedicationRow({
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
               <Ionicons name="medical" size={14} color="#6b7280" style={{ marginRight: 4 }} />
               <Text style={{ fontSize: 14, color: "#6b7280", fontWeight: '500' }}>
-                {item.dosagePerIntake} {item.dosagePerIntake === 1 ? "pill" : "pills"} per dose
+                {item.dosagePerIntake} {item.dosagePerIntake === 1 ? t('common.pill') : t('common.pills')} {t('common.perDose')}
               </Text>
             </View>
           </View>
@@ -129,7 +132,7 @@ function SwipeableMedicationRow({
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
               <Ionicons name="time" size={14} color="#3b82f6" style={{ marginRight: 4 }} />
-              <Text style={{ fontSize: 14, fontWeight: '600', color: '#1e40af' }}>Reminders</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#1e40af' }}>{t('medication.reminders')}</Text>
             </View>
             <Text style={{ fontSize: 14, color: "#1e40af", fontWeight: '500' }}>
               {item.reminders
@@ -147,7 +150,7 @@ function SwipeableMedicationRow({
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons name="time-outline" size={14} color="#6b7280" style={{ marginRight: 4 }} />
-              <Text style={{ fontSize: 14, color: "#6b7280", fontWeight: '500' }}>No reminders set</Text>
+              <Text style={{ fontSize: 14, color: "#6b7280", fontWeight: '500' }}>{t('medication.noRemindersSet')}</Text>
             </View>
           </View>
         )}
@@ -163,6 +166,7 @@ export default function MedicationPage() {
   const { height: screenHeight } = Dimensions.get('window');
   const [open, setOpen] = useState(false);
   const [meds, setMeds] = useState<Med[]>([]);
+  const t = useTranslation();
   
   // Calculate responsive button size
   const isSmallScreen = screenHeight < 700;
@@ -194,7 +198,7 @@ export default function MedicationPage() {
     <>
       <Stack.Screen
         options={{
-          title: "Medication",
+          title: t('navigation.medication'),
           headerTitleStyle: {
             fontSize: isSmallScreen ? 22 : 26,
             fontWeight: "800",
@@ -234,7 +238,7 @@ export default function MedicationPage() {
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, marginHorizontal: 4 }}>
             <Ionicons name="medical" size={20} color="#111827" style={{ marginRight: 8 }} />
             <Text style={{ fontSize: 20, fontWeight: "700", color: '#111827' }}>
-              Your Medications
+              {t('medication.yourMedications')}
             </Text>
           </View>
 
@@ -253,10 +257,10 @@ export default function MedicationPage() {
             }}>
               <Ionicons name="medical-outline" size={64} color="#d1d5db" style={{ marginBottom: 16 }} />
               <Text style={{ color: "#6b7280", textAlign: 'center', marginBottom: 8, fontSize: 16, fontWeight: '600' }}>
-                No medications yet
+                {t('medication.noMedicationsYet')}
               </Text>
               <Text style={{ color: "#9ca3af", textAlign: 'center', fontSize: 14, lineHeight: 20 }}>
-                Start tracking your medications by adding your first one
+                {t('medication.startTracking')}
               </Text>
             </View>
           ) : (
