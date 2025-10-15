@@ -142,5 +142,11 @@
     "reminderDisabled": "Reminder disabled",
     "therapyReminderTitle": "Therapy Reminder",
     "timeForTherapy": "Time for {title}"
+  },
+  "notifications": {
+    "medicationTime": "Get your medication ready",
+    "timeToTake": "Time to take {dosage} {pillText} of {medicationName}",
+    "therapyReminderTitle": "🏃‍♂️ Don't forget your therapy today",
+    "timeForTherapy": "Time for {therapyTitle}."
   }
 }

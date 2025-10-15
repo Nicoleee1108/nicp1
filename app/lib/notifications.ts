@@ -1,5 +1,46 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+
+// Import language files
+import cnTranslations from '../../locales/cn.json';
+import enTranslations from '../../locales/en.json';
+
+type Language = 'en' | 'cn';
+
+const translations = {
+  en: enTranslations,
+  cn: cnTranslations,
+};
+
+// Helper function to get nested value from object using dot notation
+function getNestedValue(obj: any, path: string): string {
+  return path.split('.').reduce((current, key) => current?.[key], obj) || path;
+}
+
+// Helper function to replace parameters in string
+function replaceParams(str: string, params?: Record<string, string | number>): string {
+  if (!params) return str;
+  
+  return str.replace(/\{(\w+)\}/g, (match, key) => {
+    return params[key]?.toString() || match;
+  });
+}
+
+// Translation function for non-React contexts
+async function getTranslation(key: string, params?: Record<string, string | number>): Promise<string> {
+  try {
+    const savedLanguage = await AsyncStorage.getItem('app_language');
+    const language: Language = (savedLanguage === 'cn' || savedLanguage === 'en') ? savedLanguage : 'en';
+    const translation = getNestedValue(translations[language], key);
+    return replaceParams(translation, params);
+  } catch (error) {
+    console.error('Error getting translation:', error);
+    // Fallback to English
+    const translation = getNestedValue(translations.en, key);
+    return replaceParams(translation, params);
+  }
+}
 
 // Configure how notifications are handled when the app is in the foreground
 Notifications.setNotificationHandler({
@@ -44,10 +85,19 @@ export async function scheduleDailyReminder(
 
   console.log(`📅 Scheduling daily reminder for ${medicationName} at ${hour}:${String(minute).padStart(2, '0')}`);
 
+  // Get translated notification content
+  const title = await getTranslation('notifications.medicationTime');
+  const pillText = dosagePerIntake === 1 ? await getTranslation('common.pill') : await getTranslation('common.pills');
+  const body = await getTranslation('notifications.timeToTake', { 
+    dosage: dosagePerIntake, 
+    pillText, 
+    medicationName 
+  });
+
   const notificationId = await Notifications.scheduleNotificationAsync({
     content: {
-      title: '💊 Medication Reminder',
-      body: `Time to take ${dosagePerIntake} ${dosagePerIntake === 1 ? 'pill' : 'pills'} of ${medicationName}`,
+      title,
+      body,
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
     },
@@ -76,59 +126,11 @@ export async function cancelNotification(notificationId: string): Promise<void> 
   await Notifications.cancelScheduledNotificationAsync(notificationId);
 }
 
-export async function testNotification(): Promise<void> {
-  const setupOk = await ensureNotificationSetup();
-  if (!setupOk) {
-    console.log('❌ Notifications not set up properly');
-    return;
-  }
-
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: '🧪  Notification',
-      body: 'This is a test notification from MedT!',
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: 2, // Send in 2 seconds
-    },
-  });
-  
-  console.log('✅ Test notification scheduled for 2 seconds from now');
-}
 
 export async function getScheduledNotifications(): Promise<any[]> {
   return await Notifications.getAllScheduledNotificationsAsync();
 }
 
-export async function createTestMedicationReminder(): Promise<void> {
-  const setupOk = await ensureNotificationSetup();
-  if (!setupOk) {
-    console.log('❌ Notifications not set up properly');
-    return;
-  }
-
-  // Create a test reminder for 1 minute from now
-  const now = new Date();
-  const testTime = new Date(now.getTime() + 60000); // 1 minute from now
-  
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: '💊 Test Medication Reminder',
-      body: 'Time to take 1 pill of Test Medication',
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DATE,
-      date: testTime,
-    },
-  });
-  
-  console.log(`✅ Test medication reminder scheduled for ${testTime.toLocaleTimeString()}`);
-}
 
 // Therapy reminder functions
 export async function scheduleTherapyReminder(
@@ -181,10 +183,17 @@ export async function scheduleTherapyReminder(
     };
   }
 
+  // Get translated notification content
+  const title = await getTranslation('notifications.therapyReminderTitle');
+  const body = await getTranslation('notifications.timeForTherapy', { 
+    therapyTitle, 
+    therapyDescription 
+  });
+
   const notificationId = await Notifications.scheduleNotificationAsync({
     content: {
-      title: '🏃‍♂️ Therapy Reminder',
-      body: `Time for ${therapyTitle}: ${therapyDescription}`,
+      title,
+      body,
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
     },

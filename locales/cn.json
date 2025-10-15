@@ -142,5 +142,11 @@
     "reminderDisabled": "提醒已禁用",
     "therapyReminderTitle": "治疗提醒",
     "timeForTherapy": "该进行{title}了"
+  },
+  "notifications": {
+    "medicationTime": "吃药时间到",
+    "timeToTake": "该吃{medicationName}了，一次{dosage}颗",
+    "therapyReminderTitle": "🏃‍♂️ 别忘了你的治疗任务",
+    "timeForTherapy": "该进行今天的{therapyTitle}了"
   }
 }
