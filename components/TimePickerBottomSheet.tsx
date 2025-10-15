@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/useLanguage';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import {
@@ -23,6 +24,7 @@ export default function TimePickerBottomSheet({
   onCancel,
 }: TimePickerBottomSheetProps) {
   const [selectedTime, setSelectedTime] = useState(initialTime);
+  const t = useTranslation();
 
   const handleTimeChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (selectedDate) {
@@ -52,7 +54,7 @@ export default function TimePickerBottomSheet({
         <View style={styles.bottomSheet}>
           <View style={styles.handle} />
           
-          <Text style={styles.title}>Select Time</Text>
+          <Text style={styles.title}>{t('medication.selectTime')}</Text>
           
           <View style={styles.pickerContainer}>
             <DateTimePicker
@@ -69,14 +71,14 @@ export default function TimePickerBottomSheet({
               style={[styles.button, styles.cancelButton]}
               onPress={handleCancel}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
             </Pressable>
             
             <Pressable
               style={[styles.button, styles.saveButton]}
               onPress={handleSave}
             >
-              <Text style={styles.saveButtonText}>Save</Text>
+              <Text style={styles.saveButtonText}>{t('common.save')}</Text>
             </Pressable>
           </View>
         </View>

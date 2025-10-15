@@ -18,10 +18,10 @@
   },
   "navigation": {
     "home": "首页",
-    "medication": "药物",
-    "bloodPressure": "血压",
+    "medication": "药物清单",
+    "bloodPressure": "血压记录",
     "therapy": "其他治疗",
-    "bp": "血压"
+    "bp": "血压记录"
   },
   "home": {
     "title": "首页",
@@ -66,7 +66,9 @@
     "noTimes": "无时间",
     "noTimesMessage": "请至少添加一个提醒时间。",
     "notificationsDisabled": "通知已禁用",
-    "notificationsDisabledMessage": "请在设置中启用通知以接收提醒。您仍可以在没有提醒的情况下保存药物。"
+    "notificationsDisabledMessage": "请在设置中启用通知以接收提醒。您仍可以在没有提醒的情况下保存药物。",
+    "edit": "编辑",
+    "selectTime": "选择时间"
   },
   "bloodPressure": {
     "title": "血压",
@@ -77,8 +79,8 @@
     "deleteConfirmation": "您确定要删除这个血压读数吗？",
     "addReading": "添加读数",
     "bloodPressure": "血压",
-    "systolic": "收缩压",
-    "diastolic": "舒张压",
+    "systolic": "收缩压（高压）",
+    "diastolic": "舒张压（低压）",
     "pulseRate": "心率（可选）",
     "notes": "备注（可选）",
     "notesPlaceholder": "关于此读数的任何备注...",

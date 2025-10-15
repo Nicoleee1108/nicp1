@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/useLanguage';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import TimePickerBottomSheet from './TimePickerBottomSheet';
@@ -16,6 +17,7 @@ export default function ReminderTimeRow({
   onDelete,
 }: ReminderTimeRowProps) {
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const t = useTranslation();
 
   const timeString = date.toLocaleTimeString([], { 
     hour: '2-digit', 
@@ -63,7 +65,7 @@ export default function ReminderTimeRow({
             backgroundColor: '#fff',
           }}
         >
-          <Text style={{ fontWeight: '600', color: '#374151' }}>Edit</Text>
+          <Text style={{ fontWeight: '600', color: '#374151' }}>{t('medication.edit')}</Text>
         </Pressable>
         
         <Pressable
@@ -77,7 +79,7 @@ export default function ReminderTimeRow({
             backgroundColor: '#fef2f2',
           }}
         >
-          <Text style={{ fontWeight: '600', color: '#dc2626' }}>Delete</Text>
+          <Text style={{ fontWeight: '600', color: '#dc2626' }}>{t('common.delete')}</Text>
         </Pressable>
       </View>
 
