@@ -1,6 +1,7 @@
 // app/(tabs)/index.tsx
+import { useFocusEffect } from "@react-navigation/native";
 import { router, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import Home from "../../components/ui/Home";
 import type { HealthSummary } from "../../types/database";
@@ -19,6 +20,13 @@ export default function Index() {
   useEffect(() => {
     loadHealthData();
   }, []);
+
+  // Refresh data whenever the home tab becomes active
+  useFocusEffect(
+    useCallback(() => {
+      loadHealthData();
+    }, [])
+  );
 
   const loadHealthData = async () => {
     try {
