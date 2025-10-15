@@ -19,34 +19,55 @@ export interface BloodPressureStats {
 export type BloodPressureCategory = 
   | 'normal' 
   | 'elevated' 
-  | 'high_stage_1' 
-  | 'high_stage_2' 
-  | 'hypertensive_crisis';
+  | 'stage_1_hypertension' 
+  | 'stage_2_hypertension' 
+  | 'severe_hypertension'
+  | 'hypertensive_emergency';
 
 export function getBloodPressureCategory(systolic: number, diastolic: number): BloodPressureCategory {
+  // NORMAL: Systolic < 120 AND Diastolic < 80
   if (systolic < 120 && diastolic < 80) return 'normal';
-  if (systolic < 130 && diastolic < 80) return 'elevated';
-  if (systolic < 140 || diastolic < 90) return 'high_stage_1';
-  if (systolic < 180 || diastolic < 120) return 'high_stage_2';
-  return 'hypertensive_crisis';
+  
+  // ELEVATED: Systolic 120-129 AND Diastolic < 80
+  if (systolic >= 120 && systolic <= 129 && diastolic < 80) return 'elevated';
+  
+  // STAGE 1 HYPERTENSION: Systolic 130-139 OR Diastolic 80-89
+  if ((systolic >= 130 && systolic <= 139) || (diastolic >= 80 && diastolic <= 89)) return 'stage_1_hypertension';
+  
+  // STAGE 2 HYPERTENSION: Systolic >= 140 OR Diastolic >= 90
+  if (systolic >= 140 || diastolic >= 90) {
+    // Check for severe/emergency levels
+    if (systolic > 180 || diastolic > 120) {
+      // Both severe hypertension and hypertensive emergency have same criteria
+      // The distinction is based on symptoms, which we can't determine from BP alone
+      // We'll default to severe hypertension for now
+      return 'severe_hypertension';
+    }
+    return 'stage_2_hypertension';
+  }
+  
+  // This should not be reached with proper logic above, but fallback
+  return 'normal';
 }
 
 export function getCategoryLabel(category: BloodPressureCategory): string {
   switch (category) {
     case 'normal': return 'Normal';
     case 'elevated': return 'Elevated';
-    case 'high_stage_1': return 'High Stage 1';
-    case 'high_stage_2': return 'High Stage 2';
-    case 'hypertensive_crisis': return 'Hypertensive Crisis';
+    case 'stage_1_hypertension': return 'Stage 1 Hypertension';
+    case 'stage_2_hypertension': return 'Stage 2 Hypertension';
+    case 'severe_hypertension': return 'Severe Hypertension';
+    case 'hypertensive_emergency': return 'Hypertensive Emergency';
   }
 }
 
 export function getCategoryColor(category: BloodPressureCategory): string {
   switch (category) {
-    case 'normal': return '#10b981'; // emerald-500
-    case 'elevated': return '#f59e0b'; // amber-500
-    case 'high_stage_1': return '#f97316'; // orange-500
-    case 'high_stage_2': return '#ef4444'; // red-500
-    case 'hypertensive_crisis': return '#dc2626'; // red-600
+    case 'normal': return '#10b981'; // emerald-500 (light green)
+    case 'elevated': return '#f59e0b'; // amber-500 (yellow)
+    case 'stage_1_hypertension': return '#f97316'; // orange-500 (orange)
+    case 'stage_2_hypertension': return '#dc2626'; // red-600 (darker orange/brown)
+    case 'severe_hypertension': return '#dc2626'; // red-600 (red)
+    case 'hypertensive_emergency': return '#7c2d12'; // red-900 (dark purple/maroon)
   }
 }
