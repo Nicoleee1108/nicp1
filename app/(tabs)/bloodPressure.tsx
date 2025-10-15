@@ -3,29 +3,29 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  Alert,
-  Animated,
-  Dimensions,
-  FlatList,
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View
+    Alert,
+    Animated,
+    Dimensions,
+    FlatList,
+    Modal,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    View
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import type { BloodPressureReading, BloodPressureStats } from "../../types/bloodPressure";
 import {
-  getBloodPressureCategory,
-  getCategoryColor,
-  getCategoryLabel
+    getBloodPressureCategory,
+    getCategoryColor,
+    getCategoryLabel
 } from "../../types/bloodPressure";
 import {
-  addBloodPressureReading,
-  calculateBloodPressureStats,
-  deleteBloodPressureReading,
-  loadBloodPressureReadings
+    addBloodPressureReading,
+    calculateBloodPressureStats,
+    deleteBloodPressureReading,
+    loadBloodPressureReadings
 } from "../lib/bloodPressureStorage";
 
 function formatDate(date: Date): string {
@@ -597,6 +597,12 @@ export default function BloodPressurePage() {
       <Stack.Screen
         options={{
           title: "BP",
+          headerTitleStyle: {
+            fontSize: isSmallScreen ? 22 : 26,
+            fontWeight: "800",
+            color: "#111827",
+          },
+          headerTitleAlign: "center",
           headerRight: () => (
             <Pressable
               onPress={() => setShowAddModal(true)}

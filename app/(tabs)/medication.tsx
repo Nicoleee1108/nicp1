@@ -195,6 +195,12 @@ export default function MedicationPage() {
       <Stack.Screen
         options={{
           title: "Medication",
+          headerTitleStyle: {
+            fontSize: isSmallScreen ? 22 : 26,
+            fontWeight: "800",
+            color: "#111827",
+          },
+          headerTitleAlign: "center",
           headerRight: () => (
             <Pressable
               onPress={() => setOpen(true)}

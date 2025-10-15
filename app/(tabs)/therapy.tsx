@@ -3,15 +3,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  Alert,
-  Dimensions,
-  FlatList,
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View
+    Alert,
+    Dimensions,
+    FlatList,
+    Modal,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    View
 } from "react-native";
 import type { TherapySession } from "../../types/database";
 import { healthDB } from "../lib/database";
@@ -458,6 +458,12 @@ export default function TherapyPage() {
       <Stack.Screen
         options={{
           title: "Therapy",
+          headerTitleStyle: {
+            fontSize: isSmallScreen ? 22 : 26,
+            fontWeight: "800",
+            color: "#111827",
+          },
+          headerTitleAlign: "center",
           headerRight: () => (
             <Pressable
               onPress={() => setShowAddModal(true)}

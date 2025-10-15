@@ -9,7 +9,7 @@ export default function TabLayout() {
   
   // Calculate responsive heights based on screen size
   const isSmallScreen = screenHeight < 700;
-  const headerHeight = isSmallScreen ? 30 : 35;
+  const headerHeight = isSmallScreen ? 45 : 60;
   const tabBarHeight = isSmallScreen ? 60 : 70;
   
   return (

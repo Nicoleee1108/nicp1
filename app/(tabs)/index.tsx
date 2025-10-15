@@ -65,7 +65,7 @@ export default function Index() {
       <>
         <Stack.Screen
           options={{
-            headerTitle: "MedT",
+            headerTitle: "Home",
             headerTitleStyle: {
               fontSize: isSmallScreen ? 22 : 26,
               fontWeight: "800",
@@ -94,7 +94,7 @@ export default function Index() {
     <>
       <Stack.Screen
         options={{
-          headerTitle: "MedT",
+            headerTitle: "Home",
           headerTitleStyle: {
             fontSize: isSmallScreen ? 22 : 26,
             fontWeight: "800",
