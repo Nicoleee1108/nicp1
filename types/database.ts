@@ -82,7 +82,6 @@ export interface HealthSummary {
       medication: string;
       time: string;
     };
-    adherence7d: number;
   };
   bloodPressure: {
     lastReading?: BloodPressureReading;

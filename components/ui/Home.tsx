@@ -3,7 +3,6 @@ import { ActivityIndicator, Dimensions, Pressable, ScrollView, Text, View } from
 import type { HealthSummary } from "../../types/database";
 
 type HomeProps = {
-  adherence7d?: number;
   nextDoseTime?: string | null;
   nextMedication?: string | null;
   todayBP?: string | null;
@@ -135,7 +134,6 @@ function QuickStatsCard({ healthSummary }: { healthSummary: HealthSummary | null
 }
 
 export default function Home({
-  adherence7d = 0,
   nextDoseTime,
   nextMedication,
   todayBP,
@@ -189,22 +187,6 @@ export default function Home({
       >
         {/* Summary chips */}
         <View style={{ flexDirection: "row", gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-          <View
-            style={{
-              backgroundColor: "#eef2ff",
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 20,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            <Ionicons name="checkmark-circle" size={16} color="#3b82f6" style={{ marginRight: 6 }} />
-            <Text style={{ fontWeight: "600", color: '#1e40af' }}>
-              7-day adherence: {adherence7d}%
-            </Text>
-          </View>
-          
           {todayBP && (
             <View
               style={{

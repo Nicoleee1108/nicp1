@@ -75,7 +75,6 @@ export default function Index() {
           }}
         />
         <Home
-          adherence7d={0}
           nextDoseTime={null}
           nextMedication={null}
           todayBP={null}
@@ -105,7 +104,6 @@ export default function Index() {
       />
 
       <Home
-        adherence7d={healthSummary?.medications.adherence7d || 0}
         nextDoseTime={healthSummary?.medications.nextDose?.time || null}
         nextMedication={healthSummary?.medications.nextDose?.medication || null}
         todayBP={healthSummary?.bloodPressure.lastReading ? 

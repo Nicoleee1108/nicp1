@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {
-    AppSettings,
-    BloodPressureReading,
-    DatabaseSchema,
-    HealthSummary,
-    Medication,
-    TherapySession
+  AppSettings,
+  BloodPressureReading,
+  DatabaseSchema,
+  HealthSummary,
+  Medication,
+  TherapySession
 } from '../../types/database';
 
 const DATABASE_KEY = 'health_database';
@@ -257,8 +257,7 @@ export class HealthDatabase {
       medications: {
         total: db.medications.length,
         active: activeMedications.length,
-        nextDose,
-        adherence7d: Math.floor(Math.random() * 20 + 80) // Mock adherence for now
+        nextDose
       },
       bloodPressure: {
         lastReading: db.bloodPressureReadings[0],
